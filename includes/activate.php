@@ -1,0 +1,34 @@
+<?php
+/**
+ * Our activation call
+ *
+ * @package WooInterestInProducts
+ */
+
+// Declare our namespace.
+namespace LiquidWeb\WooInterestInProducts\Activate;
+
+// Set our aliases.
+use LiquidWeb\WooInterestInProducts as Core;
+use LiquidWeb\WooInterestInProducts\Database as Database;
+
+/**
+ * Our inital setup function when activated.
+ *
+ * @return void
+ */
+function activate() {
+
+	// Run the check on the DB table.
+	Database\maybe_install_table();
+
+	// Set the flag to prompt site owner to enable all products.
+	update_option( Core\OPTION_PREFIX . 'enable_all_prompt', 1, 'no' );
+
+	// Include our action so that we may add to this later.
+	do_action( Core\HOOK_PREFIX . 'activate_process' );
+
+	// And flush our rewrite rules.
+	flush_rewrite_rules();
+}
+register_activation_hook( Core\FILE, __NAMESPACE__ . '\activate' );
